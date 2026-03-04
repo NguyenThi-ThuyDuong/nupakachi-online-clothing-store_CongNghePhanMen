@@ -1,0 +1,211 @@
+﻿
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>NUPAKACHI_Shop thời trang cho mọi người</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="~/Content/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="~/Content/ThuocTinhChung.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="~/Content/Images/logo.png" />
+
+
+
+</head>
+<body>
+
+    <!-- 🔴 TOP HEADER -->
+    <header class="top">
+        <div class="top-header">
+            <div class="container d-flex align-items-center justify-content-between">
+
+                <!-- Logo -->
+                <div class="d-flex align-items-center logo-shop">
+                    <a href="/Home/Index">
+                        <img src="~/Content/Images/logo.png" width="55" class="me-2" />
+                    </a>
+                    <h4 class="m-0 nameshop">NUPAKACHI</h4>
+
+
+                </div>
+
+                <!-- Search -->
+                <div class="mb-4">
+                    <form method="post" action="@Url.Action("Search", "Home")" class="d-flex input-group search-box" style="width:500px">
+                        
+
+                        <span class="input-group-text bg-white border-0">☰</span>
+                        <input type="text" name="search" value="@ViewBag.Search" class="form-control border-0" placeholder="Nhập vào sản phẩm cần tìm">
+                        <button class="btn btn-danger" type="submit">🔍</button>
+                    </form>
+                </div>
+
+
+                <!-- Buttons + Icons -->
+                <div class="d-flex align-items-center gap-3">
+
+                    @{
+                        var userName = Session["UserName"] as string;
+                        var gh = Session["ghSP"] as Nhom04_CongNghePhanMem.Models.GioHangSanPham;
+                        int itemCount = (gh != null) ? gh.TongSoLuong() : 0;
+                    }
+
+                    @if (string.IsNullOrEmpty(userName))
+                    {
+                        <!-- Chưa đăng nhập -->
+                        <a class="btn btn-light btn-sm" href="@Url.Action("DangNhap", "Account")">Sign in</a>
+                        <a class="btn btn-dark btn-sm" href="@Url.Action("DangKy", "Account")">Register</a>
+
+                        <!-- Wishlist icon -->
+                        <span class="icon-btn">♡</span>
+
+                        <!-- Cart icon -->
+                        <div class="position-relative d-inline-block">
+                            <a href="@Url.Action("GioHang", "Home")" class="text-white fs-4">🛍</a>
+                            <span class="badge bg-danger cart-badge">@itemCount</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- Đã đăng nhập -->
+                        <span class="fw-semibold text-white me-2">Xin chào, @userName</span>
+                        <a class="btn btn-pink-outline" href="@Url.Action("DangXuat", "Account")">Đăng Xuất</a>
+
+                        <!-- Wishlist / Quản lý tài khoản -->
+                        <a class="icon-btn" href="@Url.Action("QuanLy", "Home")" title="Quản lý tài khoản & đơn hàng">♡</a>
+
+                        <!-- Cart icon -->
+                        <div class="position-relative d-inline-block">
+                            <a href="@Url.Action("GioHang", "Home")" class="text-white fs-4">🛍</a>
+                            <span class="badge bg-danger cart-badge">@itemCount</span>
+                        </div>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+            <div class="container">
+
+
+                <!-- Button responsive -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Menu items -->
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav align-items-center">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/Home/Index">Trang chủ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Home/SanPham">Sản phẩm</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Home/GioiThieu">Giới thiệu</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="boSuuTapDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                Bộ sưu tập ❤️
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="boSuuTapDropdown">
+                                <li><a class="dropdown-item" href="@Url.Action("BoSuuTap", "Home", new { phanLoai = "Nữ" })">Thời trang nữ</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("BoSuuTap", "Home", new { phanLoai = "Nam" })">Thời trang nam</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("BoSuuTap", "Home", new { phanLoai = "Couple" })">Trang phục couple</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Home/HoTroKhachHang">Liên hệ hỗ trợ</a>
+                        </li>
+                        @{
+                            var role = Session["UserRole"] as string;
+                        }
+
+
+                        @if (Session["UserRole"] != null && Session["UserRole"].ToString() == "QuanTri" || Session["UserRole"] != null && Session["UserRole"].ToString() == "NhanVien")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-danger fw-bold" href="@Url.Action("QuanTriAdmin","Admin")">Quản Trị</a>
+                            </li>
+                        }
+
+
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+
+
+    <div>
+        @RenderBody()
+    </div>
+
+
+
+    <footer class="mt-5" style="background:#7a0d0d; color:white; padding:50px 0;">
+        <div class="container">
+
+            <div class="row">
+
+                <!-- SOCIAL + LOGO -->
+                <div class="col-md-4 mb-4">
+
+                    <!-- Social Icons -->
+                    <div class="d-flex mb-4 fs-4 gap-3">
+                        <span>X</span>
+                        <span>📸</span>
+                        <span>▶️</span>
+                        <span>in</span>
+                    </div>
+
+                    <!-- Logo -->
+                    <img src="~/Content/Images/logo.png" width="90" alt="logo" />
+
+                </div>
+
+                <!-- SHOP -->
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold">SHOP</h6>
+                    <p class="m-0 mt-3">Hàng mới về</p>
+                    <p class="m-0 mt-2">Hàng bán chạy</p>
+                </div>
+
+                <!-- HELP -->
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold">HELP</h6>
+                    <p class="m-0 mt-3">Liên hệ với chúng tôi</p>
+                    <p class="m-0 mt-2">Liên hệ vận chuyển</p>
+                </div>
+
+                <!-- ABOUT -->
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold">ABOUT</h6>
+                    <p class="m-0 mt-3">Giới thiệu về chúng tôi</p>
+                    <p class="m-0 mt-2">Truyền thông</p>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+    <script src="~/Content/JS/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/Content/JS/JavaScript.js"></script>
+    @RenderSection("Scripts", required: false)
+
+
+
+
+</body>
+</html>
